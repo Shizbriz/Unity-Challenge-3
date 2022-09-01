@@ -10,7 +10,6 @@ public class PlayerControllerX : MonoBehaviour
     private float gravityModifier = 1.5f;
     private Rigidbody playerRb;
     private float topBound = 14.5f;
-    private float lowerLimit = -0.5f;
     private float highBounce = 35;
 
     public ParticleSystem explosionParticle;
@@ -19,6 +18,7 @@ public class PlayerControllerX : MonoBehaviour
     private AudioSource playerAudio;
     public AudioClip moneySound;
     public AudioClip explodeSound;
+    public AudioClip bounceSound;
 
 
     // Start is called before the first frame update
@@ -45,10 +45,7 @@ public class PlayerControllerX : MonoBehaviour
         if (transform.position.y > topBound)
         {
             transform.position = new Vector3 (transform.position.x, topBound, transform.position.z);    
-        } else if (transform.position.y < lowerLimit && !gameOver)
-        {
-            playerRb.AddForce(Vector3.up * highBounce, ForceMode.Impulse);
-        }
+        } 
     }
 
     private void OnCollisionEnter(Collision other)
@@ -71,6 +68,12 @@ public class PlayerControllerX : MonoBehaviour
             playerAudio.PlayOneShot(moneySound, 1.0f);
             Destroy(other.gameObject);
 
+        }
+
+        else if (other.gameObject.CompareTag("Ground") && !gameOver)
+        {
+            playerRb.AddForce(Vector3.up * highBounce, ForceMode.Impulse);
+            playerAudio.PlayOneShot(bounceSound, 1.0f);
         }
 
     }
